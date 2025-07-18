@@ -6,40 +6,43 @@
 }
 
 body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    font-family: 'Quicksand', sans-serif;
+    background-color: #FDF6F0;
     min-height: 100vh;
     display: flex;
     align-items: center;
     justify-content: center;
     padding: 20px;
+    color: #333333;
 }
 
 .container {
     width: 100%;
     max-width: 600px;
-    background: rgba(255, 255, 255, 0.95);
+    background-color: #FFFFFF;
     border-radius: 20px;
-    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 10px 30px rgba(51, 51, 51, 0.1);
     padding: 30px;
     text-align: center;
 }
 
 /* Header styles */
 header h1 {
-    color: #4a4a4a;
+    font-family: 'Fredoka', cursive;
+    color: #333333;
     margin-bottom: 20px;
     font-size: 2.2rem;
-    font-weight: 700;
+    font-weight: 600;
 }
 
 .game-stats {
     display: flex;
     justify-content: space-around;
     margin-bottom: 20px;
-    background: rgba(0, 0, 0, 0.05);
+    background-color: #FDF6F0;
     padding: 15px;
     border-radius: 15px;
+    border: 2px solid #FFD972;
 }
 
 .stat {
@@ -49,33 +52,39 @@ header h1 {
 }
 
 .stat .label {
+    font-family: 'Quicksand', sans-serif;
     font-size: 0.9rem;
-    color: #666;
+    color: #333333;
     margin-bottom: 5px;
+    font-weight: 500;
 }
 
 .stat span:last-child {
+    font-family: 'Fredoka', cursive;
     font-size: 1.4rem;
-    font-weight: bold;
-    color: #333;
+    font-weight: 600;
+    color: #FF8C94;
 }
 
 .restart-btn {
-    background: linear-gradient(135deg, #ff6b6b, #ee5a24);
-    color: white;
+    background-color: #FF8C94;
+    color: #FFFFFF;
     border: none;
     padding: 12px 24px;
-    border-radius: 25px;
+    border-radius: 12px;
+    font-family: 'Quicksand', sans-serif;
     font-size: 1rem;
     font-weight: 600;
     cursor: pointer;
     transition: all 0.3s ease;
     margin-bottom: 30px;
+    box-shadow: 0 4px 15px rgba(255, 140, 148, 0.3);
 }
 
 .restart-btn:hover {
+    background-color: #ff7582;
     transform: translateY(-2px);
-    box-shadow: 0 8px 20px rgba(238, 90, 36, 0.3);
+    box-shadow: 0 6px 20px rgba(255, 140, 148, 0.4);
 }
 
 /* Game board styles */
@@ -85,6 +94,9 @@ header h1 {
     gap: 15px;
     margin-bottom: 30px;
     perspective: 1000px;
+    padding: 10px;
+    background-color: #FDF6F0;
+    border-radius: 15px;
 }
 
 /* Card styles */
@@ -101,7 +113,7 @@ header h1 {
 }
 
 .card.matched {
-    animation: matchPulse 0.6s ease;
+    animation: matchPulse 0.8s ease;
 }
 
 .card-face {
@@ -109,36 +121,43 @@ header h1 {
     width: 100%;
     height: 100%;
     backface-visibility: hidden;
-    border-radius: 15px;
+    border-radius: 12px;
     display: flex;
     align-items: center;
     justify-content: center;
     font-size: 2.5rem;
     border: 3px solid transparent;
     transition: all 0.3s ease;
+    box-shadow: 0 4px 12px rgba(51, 51, 51, 0.15);
 }
 
 .card-back {
-    background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
-    color: white;
+    background-color: #FFD972;
+    color: #333333;
     font-weight: bold;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
 }
 
 .card-back::before {
     content: '🎯';
     font-size: 3rem;
+    filter: brightness(0.8);
 }
 
 .card-front {
-    background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+    background-color: #FFFFFF;
     transform: rotateY(180deg);
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    border: 3px solid #FFD972;
 }
 
 .card:hover .card-back {
     transform: scale(1.05);
-    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 6px 18px rgba(51, 51, 51, 0.2);
+    background-color: #ffce5c;
+}
+
+.card.matched .card-face {
+    background-color: #B2F7EF;
+    border-color: #FF8C94;
 }
 
 .card.disabled {
@@ -152,7 +171,7 @@ header h1 {
     left: 0;
     width: 100%;
     height: 100%;
-    background: rgba(0, 0, 0, 0.8);
+    background: rgba(51, 51, 51, 0.7);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -165,54 +184,64 @@ header h1 {
 }
 
 .game-over > div {
-    background: white;
+    background-color: #FFFFFF;
     padding: 40px;
     border-radius: 20px;
     text-align: center;
-    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 15px 35px rgba(51, 51, 51, 0.3);
     animation: slideUp 0.5s ease;
+    border: 3px solid #FFD972;
 }
 
 .game-over h2 {
-    color: #4a4a4a;
+    font-family: 'Fredoka', cursive;
+    color: #FF8C94;
     margin-bottom: 20px;
     font-size: 2rem;
+    font-weight: 600;
 }
 
 .game-over p {
-    color: #666;
+    font-family: 'Quicksand', sans-serif;
+    color: #333333;
     margin-bottom: 20px;
     font-size: 1.1rem;
+    font-weight: 500;
 }
 
 .final-stats {
-    background: rgba(0, 0, 0, 0.05);
+    background-color: #FDF6F0;
     padding: 20px;
-    border-radius: 15px;
+    border-radius: 12px;
     margin: 20px 0;
+    border: 2px solid #B2F7EF;
 }
 
 .final-stats p {
     margin: 10px 0;
-    font-weight: bold;
-    color: #333;
+    font-family: 'Quicksand', sans-serif;
+    font-weight: 600;
+    color: #333333;
 }
 
 .play-again-btn {
-    background: linear-gradient(135deg, #11998e, #38ef7d);
-    color: white;
+    background-color: #FF8C94;
+    color: #FFFFFF;
     border: none;
     padding: 15px 30px;
-    border-radius: 25px;
+    border-radius: 12px;
+    font-family: 'Quicksand', sans-serif;
     font-size: 1.1rem;
     font-weight: 600;
     cursor: pointer;
     transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(255, 140, 148, 0.3);
 }
 
 .play-again-btn:hover {
+    background-color: #ff7582;
     transform: translateY(-2px);
-    box-shadow: 0 8px 20px rgba(56, 239, 125, 0.3);
+    box-shadow: 0 6px 20px rgba(255, 140, 148, 0.4);
 }
 
 /* Animations */
@@ -222,7 +251,7 @@ header h1 {
     }
     50% {
         transform: scale(1.1);
-        box-shadow: 0 0 20px rgba(250, 112, 154, 0.6);
+        box-shadow: 0 0 25px rgba(178, 247, 239, 0.8);
     }
 }
 
@@ -270,13 +299,21 @@ header h1 {
     
     .game-board {
         gap: 10px;
+        padding: 8px;
     }
     
     .card-face {
         font-size: 2rem;
+        border-radius: 10px;
     }
     
     .card-back::before {
         font-size: 2.5rem;
+    }
+    
+    .restart-btn,
+    .play-again-btn {
+        padding: 10px 20px;
+        font-size: 0.9rem;
     }
 }

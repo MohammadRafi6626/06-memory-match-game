@@ -10,7 +10,7 @@ class MemoryGame {
         this.matchedCards = [];
         this.moves = 0;
         this.matches = 0;
-        this.startTime = null;
+        this.timeLeft = 60; // 60 second countdown
         this.timerInterval = null;
         this.isGameActive = false;
         this.isProcessing = false;
@@ -76,22 +76,43 @@ class MemoryGame {
     
     // Start the game timer
     startTimer() {
-        if (!this.startTime) {
-            this.startTime = Date.now();
-            this.timerInterval = setInterval(() => {
-                this.updateTimer();
-            }, 1000);
-        }
+        if (this.timerInterval) return; // Prevent multiple timers
+        
+        this.updateTimerDisplay();
+        this.timerInterval = setInterval(() => {
+            this.timeLeft--;
+            this.updateTimerDisplay();
+            
+            // Check if time is up
+            if (this.timeLeft <= 0) {
+                this.gameTimeout();
+            }
+        }, 1000);
     }
     
     // Update the timer display
-    updateTimer() {
-        if (!this.startTime) return;
-        
-        const elapsed = Math.floor((Date.now() - this.startTime) / 1000);
-        const minutes = Math.floor(elapsed / 60).toString().padStart(2, '0');
-        const seconds = (elapsed % 60).toString().padStart(2, '0');
+    updateTimerDisplay() {
+        const minutes = Math.floor(this.timeLeft / 60).toString().padStart(2, '0');
+        const seconds = (this.timeLeft % 60).toString().padStart(2, '0');
         this.timeDisplay.textContent = `${minutes}:${seconds}`;
+        
+        // Add visual warnings based on time left
+        this.timeDisplay.classList.remove('time-warning', 'time-critical');
+        
+        if (this.timeLeft <= 5) {
+            this.timeDisplay.classList.add('time-critical');
+        } else if (this.timeLeft <= 10) {
+            this.timeDisplay.classList.add('time-warning');
+        }
+    }
+    
+    // Handle game timeout
+    gameTimeout() {
+        this.isGameActive = false;
+        this.stopTimer();
+        
+        // Show timeout modal
+        this.showTimeoutModal();
     }
     
     // Stop the timer
@@ -107,6 +128,11 @@ class MemoryGame {
         // Prevent flipping if game is not active, card is already flipped, or processing
         if (!this.isGameActive && this.moves === 0) {
             this.startGame();
+        }
+        
+        // Prevent interaction if time is up
+        if (this.timeLeft <= 0) {
+            return;
         }
         
         if (this.isProcessing || 
@@ -159,6 +185,9 @@ class MemoryGame {
                 
                 // Check if game is won
                 if (this.matches === this.emojis.length) {
+                    // Stop timer immediately and show win
+                    this.isGameActive = false;
+                    this.stopTimer();
                     this.winGame();
                 }
             }, 600);
@@ -182,15 +211,110 @@ class MemoryGame {
     winGame() {
         this.isGameActive = false;
         this.stopTimer();
-        
+
+        // Predefined congratulation messages and emojis
+        const messages = [
+            'Awesome job! 🎉',
+            'You did it! 🥳',
+            'Fantastic memory! 🎊',
+            'Superb! 🎈',
+            'You are a memory master! 🏆',
+            'Brilliant! 🌟',
+            'Wow, all matched! 🎆',
+            'Great work! 🎀'
+        ];
+        // Pick a random message
+        const randomMsg = messages[Math.floor(Math.random() * messages.length)];
+
         // Show final stats
         this.finalMovesDisplay.textContent = this.moves;
         this.finalTimeDisplay.textContent = this.timeDisplay.textContent;
-        
+
+        // Update modal with random message and emoji
+        const gameOverModal = document.getElementById('game-over');
+        const heading = gameOverModal.querySelector('h2');
+        const message = gameOverModal.querySelector('p');
+        heading.textContent = randomMsg;
+        heading.style.color = '#FF8C94';
+        message.textContent = 'You completed the game!';
+
+        // Add win class for popup background
+        gameOverModal.classList.remove('lose');
+        gameOverModal.classList.add('win');
+
+        // Show confetti effect
+        this.showConfetti();
+
         // Show game over modal with delay for final animation
         setTimeout(() => {
             this.showGameOverModal();
         }, 1000);
+    }
+
+    // Show confetti animation for winning
+    showConfetti() {
+        // Create confetti pieces
+        const colors = ['#FFD972', '#FF8C94', '#B2F7EF', '#FFB6C1', '#87CEEB'];
+        const confettiCount = 50;
+        
+        for (let i = 0; i < confettiCount; i++) {
+            const confetti = document.createElement('div');
+            confetti.className = 'confetti-piece';
+            confetti.style.position = 'fixed';
+            confetti.style.left = Math.random() * 100 + 'vw';
+            confetti.style.width = Math.random() * 8 + 8 + 'px';
+            confetti.style.height = confetti.style.width;
+            confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+            confetti.style.borderRadius = '50%';
+            confetti.style.zIndex = '2000';
+            confetti.style.animation = `confetti-fall ${Math.random() * 2 + 3}s linear forwards`;
+            
+            document.body.appendChild(confetti);
+            
+            // Remove confetti after animation
+            setTimeout(() => {
+                if (confetti.parentNode) {
+                    confetti.parentNode.removeChild(confetti);
+                }
+            }, 5000);
+        }
+    }
+
+    // Show timeout modal
+    showTimeoutModal() {
+        // Predefined losing messages and sad emojis
+        const loseMessages = [
+            'Time\'s up! 😢',
+            'So close! 😞',
+            'Try again! 😔',
+            'Don\'t give up! 😟',
+            'Keep practicing! 😕',
+            'Better luck next time! 🙁',
+            'Almost there! 😬',
+            'You can do it! 😣'
+        ];
+        // Pick a random message
+        const randomLoseMsg = loseMessages[Math.floor(Math.random() * loseMessages.length)];
+
+        // Change the modal content for timeout
+        const gameOverModal = document.getElementById('game-over');
+        const heading = gameOverModal.querySelector('h2');
+        const message = gameOverModal.querySelector('p');
+        
+        heading.textContent = randomLoseMsg;
+        heading.style.color = '#e74c3c';
+        message.textContent = 'You ran out of time! Try again to beat the clock.';
+
+        // Add lose class for popup background
+        gameOverModal.classList.remove('win');
+        gameOverModal.classList.add('lose');
+        
+        this.finalMovesDisplay.textContent = this.moves;
+        this.finalTimeDisplay.textContent = '00:00';
+        
+        setTimeout(() => {
+            this.showGameOverModal();
+        }, 500);
     }
     
     // Show game over modal
@@ -210,17 +334,27 @@ class MemoryGame {
         this.matchedCards = [];
         this.moves = 0;
         this.matches = 0;
+        this.timeLeft = 60; // Reset to 60 seconds
         this.isGameActive = false;
         this.isProcessing = false;
-        this.startTime = null;
         
         // Stop timer
         this.stopTimer();
         
         // Reset displays
         this.movesDisplay.textContent = '0';
-        this.timeDisplay.textContent = '00:00';
+        this.timeDisplay.textContent = '01:00';
+        this.timeDisplay.classList.remove('time-warning', 'time-critical');
         this.updateMatchesDisplay();
+        
+        // Reset modal content to default
+        const gameOverModal = document.getElementById('game-over');
+        const heading = gameOverModal.querySelector('h2');
+        const message = gameOverModal.querySelector('p');
+        
+        heading.textContent = '🎉 Congratulations!';
+        heading.style.color = '#FF8C94';
+        message.textContent = 'You completed the game!';
         
         // Hide game over modal
         this.hideGameOverModal();
